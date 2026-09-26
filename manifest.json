@@ -1,0 +1,22 @@
+{
+  "short_name": "Exam Bank",
+  "name": "Exam Question Bank Browser",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "any"
+}
