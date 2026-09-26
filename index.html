@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Question Bank Browser</title>
+
+  <!-- PWA & Mobile Meta -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        <h1>Exam Question Bank</h1>
+      </div>
+      <div class="header-stats">
+        <span id="matchCount" class="stat-badge">0 / 0 questions</span>
+        <button id="clearFiltersBtn" class="btn btn-outline" type="button">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"></path>
+          </svg>
+          Clear filters
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="app-main">
+      <!-- Filter Sidebar / Toolbar -->
+      <aside class="filters-panel">
+        <div class="panel-header">
+          <h2>Filter Questions</h2>
+        </div>
+
+        <form id="filterForm" class="filter-form" onsubmit="event.preventDefault();">
+          <!-- Search input -->
+          <div class="form-group">
+            <label for="searchIdInput">Search Question ID</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="search" id="searchIdInput" placeholder="e.g. Q1, partA, 2025..." autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Subject Dropdown -->
+          <div class="form-group">
+            <label for="subjectSelect">Subject</label>
+            <select id="subjectSelect">
+              <option value="">All Subjects</option>
+              <!-- Dynamic options -->
+            </select>
+          </div>
+
+          <!-- Chapter Dropdown (Dependent) -->
+          <div class="form-group">
+            <label for="chapterSelect">Chapter</label>
+            <select id="chapterSelect" disabled>
+              <option value="">All Chapters</option>
+              <!-- Dynamic options -->
+            </select>
+          </div>
+
+          <!-- Topic Dropdown (Dependent) -->
+          <div class="form-group">
+            <label for="topicSelect">Topic</label>
+            <select id="topicSelect" disabled>
+              <option value="">All Topics</option>
+              <!-- Dynamic options -->
+            </select>
+          </div>
+
+          <!-- Prompt Version Dropdown -->
+          <div class="form-group">
+            <label for="promptVersionSelect">Prompt Version</label>
+            <select id="promptVersionSelect">
+              <option value="">All Versions</option>
+              <option value="v4">v4</option>
+              <option value="v3">v3</option>
+              <option value="None">None (Uncategorized)</option>
+            </select>
+          </div>
+
+          <!-- Toggle / Checkbox for Needs Review -->
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label" for="needsReviewCheckbox">
+              <input type="checkbox" id="needsReviewCheckbox">
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-text">Flagged for Review Only</span>
+            </label>
+          </div>
+        </form>
+      </aside>
+
+      <!-- Results Display Section -->
+      <section class="results-section">
+        <!-- Error alert message container -->
+        <div id="errorState" class="alert alert-error hidden" role="alert">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div id="errorMessage">Failed to load question data. Please ensure data.json is accessible.</div>
+        </div>
+
+        <!-- Empty state message container -->
+        <div id="emptyState" class="alert alert-info hidden">
+          <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div>No questions match your active filter criteria. Try adjusting or clearing filters.</div>
+        </div>
+
+        <!-- Questions Feed -->
+        <div id="questionsContainer" class="questions-list">
+          <!-- Rendered Question Cards -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
