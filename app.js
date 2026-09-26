@@ -4,6 +4,11 @@ let taxonomyTree = {}; // { subject: { chapter: Set(topics) } }
 
 // DOM Elements
 const searchIdInput = document.getElementById('searchIdInput');
+const examSelect = document.getElementById('examSelect');
+const yearSelect = document.getElementById('yearSelect');
+const monthSelect = document.getElementById('monthSelect');
+const sessionSelect = document.getElementById('sessionSelect');
+const partSelect = document.getElementById('partSelect');
 const subjectSelect = document.getElementById('subjectSelect');
 const chapterSelect = document.getElementById('chapterSelect');
 const topicSelect = document.getElementById('topicSelect');
@@ -34,6 +39,7 @@ async function initApp() {
 
     buildTaxonomyTree(allQuestions);
     populateSubjectDropdown();
+    populateMetadataDropdowns(allQuestions);
     applyFilters();
   } catch (err) {
     showError('Failed to load questions: ' + err.message);
@@ -49,6 +55,11 @@ function showError(msg) {
 
 function setupEventListeners() {
   searchIdInput.addEventListener('input', applyFilters);
+  examSelect.addEventListener('change', applyFilters);
+  yearSelect.addEventListener('change', applyFilters);
+  monthSelect.addEventListener('change', applyFilters);
+  sessionSelect.addEventListener('change', applyFilters);
+  partSelect.addEventListener('change', applyFilters);
   subjectSelect.addEventListener('change', () => {
     updateChapterDropdown();
     applyFilters();
@@ -61,6 +72,41 @@ function setupEventListeners() {
   promptVersionSelect.addEventListener('change', applyFilters);
   needsReviewCheckbox.addEventListener('change', applyFilters);
   clearFiltersBtn.addEventListener('click', clearAllFilters);
+}
+
+/**
+ * Populates Metadata dropdowns (Exam, Year, Month, Session, Part) dynamically from dataset.
+ */
+function populateMetadataDropdowns(questions) {
+  const exams = new Set();
+  const years = new Set();
+  const months = new Set();
+  const sessions = new Set();
+  const parts = new Set();
+
+  questions.forEach(q => {
+    if (q.exam !== null && q.exam !== undefined) exams.add(q.exam);
+    if (q.year !== null && q.year !== undefined) years.add(q.year);
+    if (q.month !== null && q.month !== undefined) months.add(q.month);
+    if (q.session !== null && q.session !== undefined) sessions.add(q.session);
+    if (q.part !== null && q.part !== undefined) parts.add(q.part);
+  });
+
+  populateSelectOptions(examSelect, Array.from(exams).sort(), 'All Exams');
+  populateSelectOptions(yearSelect, Array.from(years).sort((a, b) => b - a), 'All Years');
+  populateSelectOptions(monthSelect, Array.from(months).sort((a, b) => a - b), 'All Months');
+  populateSelectOptions(sessionSelect, Array.from(sessions).sort(), 'All Sessions');
+  populateSelectOptions(partSelect, Array.from(parts).sort(), 'All Parts');
+}
+
+function populateSelectOptions(selectEl, values, defaultText) {
+  selectEl.innerHTML = `<option value="">${defaultText}</option>`;
+  values.forEach(val => {
+    const opt = document.createElement('option');
+    opt.value = String(val);
+    opt.textContent = String(val);
+    selectEl.appendChild(opt);
+  });
 }
 
 /**
@@ -175,6 +221,11 @@ function updateTopicDropdown() {
  */
 function applyFilters() {
   const query = searchIdInput.value.trim().toLowerCase();
+  const selectedExam = examSelect.value;
+  const selectedYear = yearSelect.value;
+  const selectedMonth = monthSelect.value;
+  const selectedSession = sessionSelect.value;
+  const selectedPart = partSelect.value;
   const selectedSubject = subjectSelect.value;
   const selectedChapter = chapterSelect.value;
   const selectedTopic = topicSelect.value;
@@ -184,6 +235,31 @@ function applyFilters() {
   const filtered = allQuestions.filter(q => {
     // Search QID filter
     if (query && !q.id.toLowerCase().includes(query)) {
+      return false;
+    }
+
+    // Exam filter
+    if (selectedExam && String(q.exam) !== selectedExam) {
+      return false;
+    }
+
+    // Year filter
+    if (selectedYear && String(q.year) !== selectedYear) {
+      return false;
+    }
+
+    // Month filter
+    if (selectedMonth && String(q.month) !== selectedMonth) {
+      return false;
+    }
+
+    // Session filter
+    if (selectedSession && String(q.session) !== selectedSession) {
+      return false;
+    }
+
+    // Part filter
+    if (selectedPart && String(q.part) !== selectedPart) {
       return false;
     }
 
@@ -230,6 +306,11 @@ function applyFilters() {
  */
 function clearAllFilters() {
   searchIdInput.value = '';
+  examSelect.value = '';
+  yearSelect.value = '';
+  monthSelect.value = '';
+  sessionSelect.value = '';
+  partSelect.value = '';
   subjectSelect.value = '';
   promptVersionSelect.value = '';
   needsReviewCheckbox.checked = false;
